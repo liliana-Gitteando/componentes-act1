@@ -2,14 +2,20 @@ import React, { useState } from 'react';
 
 export default function App() {
 
-  // Estado inicial de documentos
+  // Estado de documentos
   const [documentos, setDocumentos] = useState([
     {
-      id: 'RAD-E-04/04/2026-000001',
+      id: 'RAD-001',
       remitente: 'Juan Pérez',
       asunto: 'Solicitud de información'
     }
   ]);
+
+  // Estado del formulario
+  const [formData, setFormData] = useState({
+    remitente: '',
+    asunto: ''
+  });
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -24,7 +30,32 @@ export default function App() {
           Gestión de correspondencia
         </p>
 
-        {/* Vista temporal de datos */}
+        {/* FORMULARIO */}
+        <div className="mt-6">
+          <h2 className="text-xl font-semibold mb-2">Nuevo Documento</h2>
+
+          <input
+            type="text"
+            placeholder="Remitente"
+            value={formData.remitente}
+            onChange={(e) => setFormData({...formData, remitente: e.target.value})}
+            className="w-full border p-2 mb-2 rounded"
+          />
+
+          <input
+            type="text"
+            placeholder="Asunto"
+            value={formData.asunto}
+            onChange={(e) => setFormData({...formData, asunto: e.target.value})}
+            className="w-full border p-2 mb-2 rounded"
+          />
+
+          <button className="bg-blue-600 text-white px-4 py-2 rounded">
+            Guardar
+          </button>
+        </div>
+
+        {/* LISTA */}
         <div className="mt-6">
           <h2 className="text-xl font-semibold mb-2">Documentos</h2>
           
