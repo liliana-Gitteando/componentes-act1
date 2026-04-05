@@ -5,7 +5,7 @@ export default function App() {
   // Estado de documentos
   const [documentos, setDocumentos] = useState([
     {
-      id: 'RAD-001',
+      id: 'RAD-4/5/2026-0000001',
       remitente: 'Juan Pérez',
       asunto: 'Solicitud de información'
     }
@@ -16,6 +16,25 @@ export default function App() {
     remitente: '',
     asunto: ''
   });
+
+  // FUNCIÓN PARA GUARDAR
+  const handleGuardar = () => {
+    if (!formData.remitente || !formData.asunto) return;
+
+    const nuevoDocumento = {
+      id: `RAD-00${documentos.length + 1}`,
+      remitente: formData.remitente,
+      asunto: formData.asunto
+    };
+
+    setDocumentos([nuevoDocumento, ...documentos]);
+
+    // limpiar formulario
+    setFormData({
+      remitente: '',
+      asunto: ''
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -50,7 +69,10 @@ export default function App() {
             className="w-full border p-2 mb-2 rounded"
           />
 
-          <button className="bg-blue-600 text-white px-4 py-2 rounded">
+          <button 
+            onClick={handleGuardar}
+            className="bg-blue-600 text-white px-4 py-2 rounded"
+          >
             Guardar
           </button>
         </div>
@@ -62,7 +84,7 @@ export default function App() {
           <ul className="list-disc pl-5">
             {documentos.map((doc, index) => (
               <li key={index}>
-                {doc.id} - {doc.remitente}
+                {doc.id} - {doc.remitente} - {doc.asunto}
               </li>
             ))}
           </ul>
