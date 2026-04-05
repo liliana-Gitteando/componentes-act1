@@ -2,22 +2,19 @@ import React, { useState } from 'react';
 
 export default function App() {
 
-  // Estado de documentos
   const [documentos, setDocumentos] = useState([
     {
-      id: 'RAD-4/5/2026-0000001',
+      id: 'RAD-E-04/04/2006-0000001',
       remitente: 'Juan Pérez',
       asunto: 'Solicitud de información'
     }
   ]);
 
-  // Estado del formulario
   const [formData, setFormData] = useState({
     remitente: '',
     asunto: ''
   });
 
-  // FUNCIÓN PARA GUARDAR
   const handleGuardar = () => {
     if (!formData.remitente || !formData.asunto) return;
 
@@ -29,7 +26,6 @@ export default function App() {
 
     setDocumentos([nuevoDocumento, ...documentos]);
 
-    // limpiar formulario
     setFormData({
       remitente: '',
       asunto: ''
@@ -37,21 +33,21 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      
-      <div className="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow">
-        
-        <h1 className="text-3xl font-bold text-blue-600">
+    <div className="min-h-screen bg-slate-100 p-6">
+
+      <div className="max-w-5xl mx-auto bg-white p-6 rounded-2xl shadow">
+
+        <h1 className="text-3xl font-bold text-indigo-600">
           Sistema de Radicación
         </h1>
 
-        <p className="mt-2 text-gray-600">
+        <p className="text-gray-500 mt-1">
           Gestión de correspondencia
         </p>
 
         {/* FORMULARIO */}
-        <div className="mt-6">
-          <h2 className="text-xl font-semibold mb-2">Nuevo Documento</h2>
+        <div className="mt-6 bg-gray-50 p-4 rounded-lg border">
+          <h2 className="text-lg font-semibold mb-3">Nuevo Documento</h2>
 
           <input
             type="text"
@@ -71,23 +67,39 @@ export default function App() {
 
           <button 
             onClick={handleGuardar}
-            className="bg-blue-600 text-white px-4 py-2 rounded"
+            className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
           >
             Guardar
           </button>
         </div>
 
-        {/* LISTA */}
-        <div className="mt-6">
-          <h2 className="text-xl font-semibold mb-2">Documentos</h2>
-          
-          <ul className="list-disc pl-5">
-            {documentos.map((doc, index) => (
-              <li key={index}>
-                {doc.id} - {doc.remitente} - {doc.asunto}
-              </li>
-            ))}
-          </ul>
+        {/* TABLA */}
+        <div className="mt-8">
+          <h2 className="text-lg font-semibold mb-3">Bandeja de Entrada</h2>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border rounded-lg overflow-hidden">
+              
+              <thead className="bg-gray-100 text-gray-600 text-sm">
+                <tr>
+                  <th className="p-3">Radicado</th>
+                  <th className="p-3">Remitente</th>
+                  <th className="p-3">Asunto</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {documentos.map((doc, index) => (
+                  <tr key={index} className="border-t hover:bg-gray-50">
+                    <td className="p-3 font-semibold text-indigo-600">{doc.id}</td>
+                    <td className="p-3">{doc.remitente}</td>
+                    <td className="p-3">{doc.asunto}</td>
+                  </tr>
+                ))}
+              </tbody>
+
+            </table>
+          </div>
         </div>
 
       </div>
