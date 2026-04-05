@@ -7,13 +7,15 @@ export default function App() {
       id: 'RAD-E-04/04/2026-0000001',
       remitente: 'Juan Pérez',
       asunto: 'Solicitud de información',
+      tipo: 'Petición',
       estado: 'Pendiente'
     }
   ]);
 
   const [formData, setFormData] = useState({
     remitente: '',
-    asunto: ''
+    asunto: '',
+    tipo: 'Petición'
   });
 
   const generarRadicado = () => {
@@ -35,6 +37,7 @@ export default function App() {
       id: generarRadicado(),
       remitente: formData.remitente,
       asunto: formData.asunto,
+      tipo: formData.tipo,
       estado: 'Pendiente'
     };
 
@@ -42,11 +45,11 @@ export default function App() {
 
     setFormData({
       remitente: '',
-      asunto: ''
+      asunto: '',
+      tipo: 'Petición'
     });
   };
 
-  // 🔥 CAMBIAR ESTADO
   const cambiarEstado = (index, nuevoEstado) => {
     const nuevosDocumentos = [...documentos];
     nuevosDocumentos[index].estado = nuevoEstado;
@@ -66,6 +69,21 @@ export default function App() {
     }
   };
 
+  const getTipoColor = (tipo) => {
+    switch (tipo) {
+      case 'Petición':
+        return 'bg-indigo-100 text-indigo-700';
+      case 'Queja':
+        return 'bg-red-100 text-red-700';
+      case 'Reclamo':
+        return 'bg-orange-100 text-orange-700';
+      case 'Sugerencia':
+        return 'bg-purple-100 text-purple-700';
+      default:
+        return 'bg-gray-100 text-gray-700';
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-100 p-6">
 
@@ -76,7 +94,7 @@ export default function App() {
         </h1>
 
         <p className="text-gray-500 mt-1">
-          Gestión de correspondencia
+          Gestión de correspondencia PQRSD
         </p>
 
         {/* FORMULARIO */}
@@ -99,6 +117,18 @@ export default function App() {
             className="w-full border p-2 mb-2 rounded"
           />
 
+          {/* 🔥 NUEVO: TIPO */}
+          <select
+            value={formData.tipo}
+            onChange={(e) => setFormData({...formData, tipo: e.target.value})}
+            className="w-full border p-2 mb-2 rounded"
+          >
+            <option>Petición</option>
+            <option>Queja</option>
+            <option>Reclamo</option>
+            <option>Sugerencia</option>
+          </select>
+
           <button 
             onClick={handleGuardar}
             className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
@@ -119,6 +149,7 @@ export default function App() {
                   <th className="p-3">Radicado</th>
                   <th className="p-3">Remitente</th>
                   <th className="p-3">Asunto</th>
+                  <th className="p-3">Tipo</th>
                   <th className="p-3">Estado</th>
                 </tr>
               </thead>
@@ -129,6 +160,14 @@ export default function App() {
                     <td className="p-3 font-semibold text-indigo-600">{doc.id}</td>
                     <td className="p-3">{doc.remitente}</td>
                     <td className="p-3">{doc.asunto}</td>
+
+                    {/* 🔥 NUEVA COLUMNA */}
+                    <td className="p-3">
+                      <span className={`px-2 py-1 rounded text-xs font-semibold ${getTipoColor(doc.tipo)}`}>
+                        {doc.tipo}
+                      </span>
+                    </td>
+
                     <td className="p-3 space-y-1">
                       
                       <span className={`block px-3 py-1 rounded-full text-xs font-semibold ${getEstadoColor(doc.estado)}`}>
