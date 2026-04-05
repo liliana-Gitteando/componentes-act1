@@ -1,22 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function App() {
 
-  const [documentos, setDocumentos] = useState([
-    {
-      id: 'RAD-E-04/04/2026-0000001',
-      remitente: 'Juan Pérez',
-      asunto: 'Solicitud de información',
-      tipo: 'Petición',
-      estado: 'Pendiente'
-    }
-  ]);
+  // CARGAR DATOS DESDE LOCALSTORAGE
+  const [documentos, setDocumentos] = useState(() => {
+    const data = localStorage.getItem('documentos');
+    return data ? JSON.parse(data) : [
+      {
+        id: 'RAD-E-04/04/2026-0000001',
+        remitente: 'Juan Pérez',
+        asunto: 'Solicitud de información',
+        tipo: 'Petición',
+        estado: 'Pendiente'
+      }
+    ];
+  });
 
   const [formData, setFormData] = useState({
     remitente: '',
     asunto: '',
     tipo: 'Petición'
   });
+
+  const [filtroEstado, setFiltroEstado] = useState('Todos');
+  const [filtroTipo, setFiltroTipo] = useState('Todos');
+  const [busqueda, setBusqueda] = useState('');
+
+  // GUARDAR AUTOMÁTICAMENTE
+  useEffect(() => {
+    localStorage.setItem('documentos', JSON.stringify(documentos));
+  }, [documentos]);
 
   const generarRadicado = () => {
     const fecha = new Date();
@@ -83,6 +96,17 @@ export default function App() {
         return 'bg-gray-100 text-gray-700';
     }
   };
+// Filtrado busqueda de documentos 
+  const documentosFiltrados = documentos.filter(doc => {
+    return (
+      (filtroEstado === 'Todos' || doc.estado === filtroEstado) &&
+      (filtroTipo === 'Todos' || doc.tipo === filtroTipo) &&
+      (
+        doc.remitente.toLowerCase().includes(busqueda.toLowerCase()) ||
+        doc.asunto.toLowerCase().includes(busqueda.toLowerCase())
+      )
+    );
+  });
 
   return (
     <div className="min-h-screen bg-slate-100 p-6">
@@ -117,7 +141,6 @@ export default function App() {
             className="w-full border p-2 mb-2 rounded"
           />
 
-          {/* 🔥 NUEVO: TIPO */}
           <select
             value={formData.tipo}
             onChange={(e) => setFormData({...formData, tipo: e.target.value})}
@@ -137,8 +160,44 @@ export default function App() {
           </button>
         </div>
 
+        {/* FILTROS + BUSCADOR */}
+        <div className="mt-6 flex gap-4 flex-wrap">
+
+          <input
+            type="text"
+            placeholder="Buscar por remitente o asunto..."
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+            className="border p-2 rounded w-full md:w-1/3"
+          />
+
+          <select
+            value={filtroEstado}
+            onChange={(e) => setFiltroEstado(e.target.value)}
+            className="border p-2 rounded"
+          >
+            <option>Todos</option>
+            <option>Pendiente</option>
+            <option>En trámite</option>
+            <option>Resuelto</option>
+          </select>
+
+          <select
+            value={filtroTipo}
+            onChange={(e) => setFiltroTipo(e.target.value)}
+            className="border p-2 rounded"
+          >
+            <option>Todos</option>
+            <option>Petición</option>
+            <option>Queja</option>
+            <option>Reclamo</option>
+            <option>Sugerencia</option>
+          </select>
+
+        </div>
+
         {/* TABLA */}
-        <div className="mt-8">
+        <div className="mt-6">
           <h2 className="text-lg font-semibold mb-3">Bandeja de Entrada</h2>
 
           <div className="overflow-x-auto">
@@ -155,13 +214,12 @@ export default function App() {
               </thead>
 
               <tbody>
-                {documentos.map((doc, index) => (
+                {documentosFiltrados.map((doc, index) => (
                   <tr key={index} className="border-t hover:bg-gray-50">
                     <td className="p-3 font-semibold text-indigo-600">{doc.id}</td>
                     <td className="p-3">{doc.remitente}</td>
                     <td className="p-3">{doc.asunto}</td>
 
-                    {/* 🔥 NUEVA COLUMNA */}
                     <td className="p-3">
                       <span className={`px-2 py-1 rounded text-xs font-semibold ${getTipoColor(doc.tipo)}`}>
                         {doc.tipo}
